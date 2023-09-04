@@ -17,7 +17,7 @@ const colors = [
       class="w-full rounded-lg px-4"
     >
       <div class="text-xl p-4 my-2">Wallet Management</div>
-      <button class="mx-2 mb-4 px-4 py-2 bg-rp-dawn-pine/80 dark:bg-rp-moon-pine/80 hover:bg-rp-dawn-pine hover:dark:bg-rp-moon-pine rounded-md">Create Wallet</button>
+      <button class="mx-2 mb-4 px-4 py-2 bg-rp-dawn-iris/20 dark:bg-rp-moon-pine/80 hover:bg-rp-dawn-iris/40 hover:dark:bg-rp-moon-pine rounded-md">Create Wallet</button>
       <!-- Loop this for list of wallet -->
       <div class="flex flex-row flex-wrap">
         <div
