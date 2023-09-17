@@ -4,66 +4,79 @@ const currentRoute = router.currentRoute;
 
 const getLeftNavigatorColor = (value) => {
   if (currentRoute.value.name === value) {
-    return "text-rp-dawn-text dark:text-rp-moon-text";
+    return "text-rp-dawn-text dark:text-rp-moon-text hover:bg-rp-dawn-overlay hover:dark:bg-rp-moon-overlay";
   }
 
-  return "text-rp-dawn-subtle dark:text-rp-moon-subtle";
+  return "text-rp-dawn-subtle/50 dark:text-rp-moon-subtle hover:bg-rp-dawn-overlay hover:dark:bg-rp-moon-overlay";
+};
+
+const getProfileNavigationColor = () => {
+  if (currentRoute.value.name !== "profile") {
+    return "text-rp-dawn-gold/80 dark:text-rp-moon-gold/50 bg-rp-dawn-overlay dark:bg-rp-moon-overlay hover:bg-rp-dawn-subtle hover:dark:bg-rp-moon-subtle";
+  }
+
+  return "text-rp-dawn-gold dark:text-rp-moon-gold bg-rp-dawn-overlay dark:bg-rp-moon-overlay hover:bg-rp-dawn-subtle hover:dark:bg-rp-moon-subtle";
 };
 </script>
 
 <template>
   <div
-    class="flex flex-row min-h-screen bg-gray-200 text-white bg-rp-dawn-base dark:bg-rp-moon-base text-rp-dawn-text dark:text-rp-moon-text"
+    class="flex flex-row min-h-screen bg-gray-200 text-white bg-rp-dawn-overlay dark:bg-rp-moon-base text-rp-dawn-text dark:text-rp-moon-text"
   >
-
     <!-- body -->
     <div class="flex flex-row flex-1">
-
       <!-- left navigation -->
       <div
-        class="w-[240px] bg-rp-dawn-surface dark:bg-rp-moon-surface flex flex-col"
+        class="w-[80px] bg-rp-dawn-surface dark:bg-rp-moon-surface flex flex-col drop-shadow-xl"
       >
         <div class="flex flex-col flex-1">
-          <div class="p-2 h-[56px] text-center font-bold my-4">Expense App</div>
-          <div class="p-2">
-            <NuxtLink
-              to="/dashboard"
-              class="p-2 cursor-pointer"
-              :class="getLeftNavigatorColor('dashboard')"
-            >
-              Dashboard
-            </NuxtLink>
-          </div>
-          <div class="p-2">
-            <NuxtLink
-              to="/wallet"
-              class="p-2 cursor-pointer"
-              :class="getLeftNavigatorColor('wallet')"
-            >
-              Wallet
-            </NuxtLink>
-          </div>
-          <div class="p-2">
-            <NuxtLink
-              to="/transaction"
-              class="p-2 cursor-pointer"
-              :class="getLeftNavigatorColor('transaction')"
-            >
+          <div class="h-[64px] text-center font-bold"></div>
+          <NuxtLink
+            to="/transaction"
+            :class="getLeftNavigatorColor('transaction')"
+            class="h-[80px] w-[80px] text-center text-xs flex flex-col"
+          >
+            <div class="m-auto">
+              <IconTransaction class="text-center mx-auto" />
               Transaction
-            </NuxtLink>
-          </div>
+            </div>
+          </NuxtLink>
+          <NuxtLink
+            to="/report"
+            :class="getLeftNavigatorColor('report')"
+            class="h-[80px] w-[80px] text-center text-xs flex flex-col"
+          >
+            <div class="m-auto">
+              <IconReport class="text-center mx-auto" />
+              Report
+            </div>
+          </NuxtLink>
         </div>
         <NuxtLink
-        to="/profile"
-        class="p-6 text-center bg-rp-dawn-overlay dark:bg-rp-moon-overlay">
-           [Username]
+          to="/profile"
+          :class="getProfileNavigationColor()"
+          class="h-[80px] w-[80px] text-center text-xs flex flex-col"
+        >
+          <div class="m-auto">
+            <IconProfile class="text-center mx-auto" />
+            Profile
+          </div>
         </NuxtLink>
       </div>
 
       <!-- container -->
-      <div class="bg-slate-800 flex-1 overflow-auto flex flex-col">
-        <div class="flex-1 p-4"><slot /></div>
-        <div class="h-[24px] mx-auto m-4 p-8">&copy;2023 - AT</div>
+      
+      <div class="flex-1 overflow-auto flex flex-col">
+        <div class="h-[64px] w-full bg-rp-dawn-surface dark:bg-rp-moon-surface">
+          <slot name="header" />
+        </div>
+        <div class="flex container-xl mx-8 mt-8">
+          <div
+            class="w-max min-w-[786px] container-md mx-auto bg-rp-dawn-surface dark:bg-rp-moon-surface drop-shadow-xl"
+          >
+            <slot name="container" />
+          </div>
+        </div>
       </div>
     </div>
   </div>

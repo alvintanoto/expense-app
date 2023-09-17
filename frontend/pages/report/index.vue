@@ -4,6 +4,7 @@ const layout = "client";
 
 <template>
   <NuxtLayout :name="layout">
-    <div class="text-xl p-4">Hello, [user]! </div>
+    <template #header>  </template>
+    <template #container>  </template>
   </NuxtLayout>
 </template>
