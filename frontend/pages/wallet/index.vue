@@ -1,17 +1,10 @@
 <script setup>
 const layout = "client";
-
-const wallets = [
-  {
-    name: "Kantong USD",
-    currency: "USD",
-    createdAt: "2 September 2023",
-  },
-];
 </script>
 
 <template>
   <NuxtLayout :name="layout">
-    
+    <template #header> </template>
+    <template #container> </template>
   </NuxtLayout>
 </template>

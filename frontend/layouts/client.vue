@@ -3,7 +3,7 @@ const router = useRouter();
 const currentRoute = router.currentRoute;
 
 const getLeftNavigatorColor = (value) => {
-  if (currentRoute.value.name === value) {
+  if (currentRoute.value.name.split("-")[0] === value) {
     return "text-rp-dawn-text dark:text-rp-moon-text hover:bg-rp-dawn-overlay hover:dark:bg-rp-moon-overlay";
   }
 
@@ -92,7 +92,7 @@ const getProfileNavigationColor = () => {
         </div>
         <div class="flex container-xl mx-8 mt-8">
           <div
-            class="w-max min-w-[786px] container-md mx-auto bg-rp-dawn-surface dark:bg-rp-moon-surface drop-shadow-xl"
+            class="w-max min-w-[786px] rounded-md container-md mx-auto bg-rp-dawn-surface dark:bg-rp-moon-surface drop-shadow-xl"
           >
             <slot name="container" />
           </div>
