@@ -28,6 +28,9 @@ type (
 		MaxIdleTimeDuration string `envconfig:"DATABASE_MAX_IDLE_TIME_DURATION" required:"true" default:"15m"`
 
 		RedisDsn string `envconfig:"REDIS_DSN" required:"true" default:""`
+
+		JwtAccessTokenExpireDuration  string `envconfig:"JWT_ACCESS_TOKEN_EXPIRE_DURATION" required:"true" default:"30m"`
+		JwtRefreshTokenExpireDuration string `envconfig:"JWT_REFRESH_TOKEN_EXPIRE_DURATION" required:"true" default:"24h"`
 	}
 )
 

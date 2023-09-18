@@ -4,12 +4,12 @@ import (
 	"context"
 	"database/sql"
 	"expense_app/internal/util/config"
+	"expense_app/internal/util/logger"
 	"fmt"
 	"time"
 
 	"github.com/redis/go-redis/v9"
 	"go.uber.org/dig"
-	"go.uber.org/zap"
 )
 
 func Register(container *dig.Container) error {
@@ -24,7 +24,7 @@ func Register(container *dig.Container) error {
 	return nil
 }
 
-func NewDB(cfg config.Configuration, logger *zap.Logger) (*sql.DB, error) {
+func NewDB(cfg config.Configuration, logger logger.Logger) (*sql.DB, error) {
 	logger.Info("initializing database...")
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=Asia/Jakarta",
 		cfg.DatabaseHost,
@@ -54,7 +54,7 @@ func NewDB(cfg config.Configuration, logger *zap.Logger) (*sql.DB, error) {
 
 	err = db.PingContext(ctx)
 	if err != nil {
-		logger.With(zap.Error(err)).Error("error pinging database")
+		logger.Error("error pinging database")
 		return nil, err
 	}
 
@@ -62,7 +62,7 @@ func NewDB(cfg config.Configuration, logger *zap.Logger) (*sql.DB, error) {
 	return db, nil
 }
 
-func NewRedisClient(cfg *config.Configuration, logger *zap.Logger) (*redis.Client, error) {
+func NewRedisClient(cfg config.Configuration, logger logger.Logger) (*redis.Client, error) {
 	rdb := redis.NewClient(&redis.Options{
 		Addr:     cfg.RedisDsn,
 		Password: "",
@@ -71,10 +71,10 @@ func NewRedisClient(cfg *config.Configuration, logger *zap.Logger) (*redis.Clien
 
 	result, err := rdb.Ping(context.Background()).Result()
 	if err != nil {
-		logger.With(zap.Error(err)).Error("error pinging redis")
+		logger.Error("error pinging redis")
 		return nil, err
 	}
 
-	logger.Info("ping redis result", zap.String("result", result))
+	logger.Infof("ping redis result: %v", result)
 	return rdb, nil
 }
