@@ -33,7 +33,7 @@ const handleRegister = async (evt) => {
     return;
   }
 
-  navigateTo("/dashboard");
+  navigateTo("/wallet");
 };
 </script>
 
@@ -54,12 +54,12 @@ const handleRegister = async (evt) => {
         </div>
       </div>
 
-      <div class="mt-16 container-md mx-auto">
+      <div class="mt-16 container-md max-w-[768px] mx-auto">
         <form @submit.prevent="handleRegister($event)">
-          <div class="text-lg">Register</div>
+          <div class="text-lg font-bold">Register</div>
           <div
             v-if="errorMessage"
-            class="my-4 p-4 border-2 bg-rp-dawn-love/10 dark:bg-rp-dawn-love/10 border-rp-dawn-love dark:border-rp-moon-love text-rp-dawn-love dark:text-rp-moon-love"
+            class="my-4 p-4 border-2 rounded-md bg-rp-dawn-love/10 dark:bg-rp-dawn-love/10 border-rp-dawn-love dark:border-rp-moon-love text-rp-dawn-love dark:text-rp-moon-love"
           >
             {{ errorMessage }}
           </div>

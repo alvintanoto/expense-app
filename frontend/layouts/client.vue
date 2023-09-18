@@ -21,7 +21,7 @@ const getProfileNavigationColor = () => {
 
 <template>
   <div
-    class="flex flex-row min-h-screen bg-gray-200 text-white bg-rp-dawn-overlay dark:bg-rp-moon-base text-rp-dawn-text dark:text-rp-moon-text"
+    class="flex flex-row min-h-screen bg-gray-200 bg-rp-dawn-overlay dark:bg-rp-moon-base text-rp-dawn-text dark:text-rp-moon-text"
   >
     <!-- body -->
     <div class="flex flex-row flex-1">
@@ -51,6 +51,26 @@ const getProfileNavigationColor = () => {
               Report
             </div>
           </NuxtLink>
+          <NuxtLink
+            to="/wallet"
+            :class="getLeftNavigatorColor('wallet')"
+            class="h-[80px] w-[80px] text-center text-xs flex flex-col"
+          >
+            <div class="m-auto">
+              <IconWallet class="text-center mx-auto" />
+              Wallet
+            </div>
+          </NuxtLink>
+          <NuxtLink
+            to="/settings"
+            :class="getLeftNavigatorColor('settings')"
+            class="h-[80px] w-[80px] text-center text-xs flex flex-col"
+          >
+            <div class="m-auto">
+              <IconSetting class="text-center mx-auto" />
+              Settings
+            </div>
+          </NuxtLink>
         </div>
         <NuxtLink
           to="/profile"
@@ -65,7 +85,7 @@ const getProfileNavigationColor = () => {
       </div>
 
       <!-- container -->
-      
+
       <div class="flex-1 overflow-auto flex flex-col">
         <div class="h-[64px] w-full bg-rp-dawn-surface dark:bg-rp-moon-surface">
           <slot name="header" />
