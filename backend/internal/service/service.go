@@ -7,6 +7,7 @@ type Holder struct {
 
 	AuthenticationService AuthenticationService
 	UserService           UserService
+	CurrencyService       CurrencyService
 }
 
 func Register(container *dig.Container) error {
@@ -15,6 +16,10 @@ func Register(container *dig.Container) error {
 	}
 
 	if err := container.Provide(NewUserService); err != nil {
+		return err
+	}
+
+	if err := container.Provide(NewCurrencyService); err != nil {
 		return err
 	}
 

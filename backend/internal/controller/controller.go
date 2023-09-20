@@ -9,10 +9,16 @@ type Holder struct {
 	dig.In
 
 	RegistrationHandler RegistrationHandler
+
+	CurrencyHandler CurrencyHandler
 }
 
 func Register(container *dig.Container) error {
 	if err := container.Provide(NewRegistrationHandler); err != nil {
+		return err
+	}
+
+	if err := container.Provide(NewCurrencyHandler); err != nil {
 		return err
 	}
 
@@ -26,4 +32,9 @@ func (c Holder) Routes(app *echo.Echo) {
 	v1.POST("/register", c.RegistrationHandler.RegisterUser)
 
 	// TODO: user authentication & authorization
+
+	// TODO: Cache currency data 24Hour
+	v1.GET("/currencies", c.CurrencyHandler.GetCurrencies)
+
+	// TODO: wallets
 }
