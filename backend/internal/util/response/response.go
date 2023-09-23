@@ -12,11 +12,14 @@ var (
 	IncorrectCredentialsError = NewMessage().SendResponse(http.StatusUnauthorized, "40100", "Incorrect credentials", "Authentication failed. Please double-check your credentials and try again.")
 	TokenExpiredError         = NewMessage().SendResponse(http.StatusUnauthorized, "40101", "Session expired", "Session expired. Please log in again.")
 	TokenSignatureInvalid     = NewMessage().SendResponse(http.StatusUnauthorized, "40102", "Token signature invalid", "Invalid session. Please log in again.")
+	RefreshTokenInvalid       = NewMessage().SendResponse(http.StatusUnauthorized, "40103", "Refresh token invalid", "Refresh token invalid")
+	InvalidTokenError         = NewMessage().SendResponse(http.StatusUnauthorized, "40104", "Invalid Token", "Invalid Token")
 
 	ForbiddenError = NewMessage().SendResponse(http.StatusForbidden, "40300", "Forbidden", "Forbidden")
 
 	RouteNotFoundError  = NewMessage().SendResponse(http.StatusNotFound, "40400", "Route not found", "Oops! The page you're looking for can't be found.")
 	RecordNotFoundError = NewMessage().SendResponse(http.StatusNotFound, "40401", "Record not found", "Record not found.")
+	UserNotFoundError   = NewMessage().SendResponse(http.StatusNotFound, "40402", "User not found", "User not registered, please register to continue.")
 
 	ConflictError               = NewMessage().SendResponse(http.StatusConflict, "40900", "Conflict", "Conflict")
 	UsernameOrEmailAlreadyExist = NewMessage().SendResponse(http.StatusConflict, "409", "Username or email already taken", "Username or email is already used. Please choose another.")

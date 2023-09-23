@@ -13,7 +13,6 @@ const {  inputRef,
 watch(
   () => data.options.value,
   (options) => {
-    console.log(options);
     setOptions(options);
   }
 );

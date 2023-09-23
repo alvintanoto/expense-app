@@ -15,6 +15,8 @@ import (
 type (
 	AuthenticationService interface {
 		Login(username, password string) (accessToken, refreshToken string, err error)
+		RefreshToken(userID, accessToken, refreshToken string) (newAccessToken, newRefreshToken string, err error)
+		Logout(userID, token string)
 	}
 
 	implAuth struct {
@@ -90,4 +92,33 @@ func (i *implAuth) CreateUserSession(user *entity.User) (accessToken, refreshTok
 	refreshToken = string(refreshTokenBytes)
 	go i.session.CreateUserSession(user.ID, accessToken, refreshToken, user)
 	return accessToken, refreshToken, nil
+}
+
+func (i *implAuth) RefreshToken(userID, accessToken, refreshToken string) (newAccessToken, newRefreshToken string, err error) {
+	user, err := i.repo.UserRepository.GetActiveUserByUserID(userID)
+	if err != nil {
+		return "", "", err
+	}
+
+	sessionRefresh, err := i.session.GetUserRefreshSession(userID, accessToken)
+	if err != nil {
+		return "", "", err
+	}
+
+	if sessionRefresh != refreshToken {
+		return "", "", session.ErrInvalidRefreshToken
+	}
+
+	go i.session.DeleteUserSession(userID, accessToken)
+
+	newAccessToken, newRefreshToken, err = i.CreateUserSession(user)
+	if err != nil {
+		return "", "", session.ErrInvalidRefreshToken
+	}
+
+	return newAccessToken, newRefreshToken, nil
+}
+
+func (i *implAuth) Logout(userID, token string) {
+	go i.session.DeleteUserSession(userID, token)
 }

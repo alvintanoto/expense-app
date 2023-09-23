@@ -1,4 +1,8 @@
 <script setup>
+definePageMeta({
+  middleware: ["authenticated"],
+});
+
 import { ref } from "vue";
 const layout = "client";
 

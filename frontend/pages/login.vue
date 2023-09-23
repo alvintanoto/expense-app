@@ -1,8 +1,50 @@
 <script setup>
+definePageMeta({
+  middleware: ["authenticated"],
+});
+
 import { ref } from "vue";
+
+const accessTokenCookie = useCookie("access_token");
+const refreshTokenCookie = useCookie("refresh_token");
 const errorMessage = ref("");
 
-const handleLogin = (evt) => {
+
+const doLogin = async (username, password) => {
+  const resp = await useFetch("/api/auth/login", {
+    method: "POST",
+    body: {
+      username: username,
+      password: password,
+    },
+    onResponseError({ request, response, options }) {
+      if (response.status === 400) {
+        response._data.data.client_message =
+          response._data.data.client_message.replaceAll("; ", "\n");
+        errorMessage.value = response._data.data.client_message;
+        return;
+      }
+
+      if (response.status > 400 && response.status < 500) {
+        errorMessage.value = response._data.data.client_message;
+        return;
+      }
+
+      errorMessage.value = "cannot connect to server, please try again later";
+      return;
+    },
+  });
+
+  if (resp.data) {
+    if (resp.data.value.code === "20000") {
+      accessTokenCookie.value = resp.data.value.data.access_token;
+      refreshTokenCookie.value = resp.data.value.data.refresh_token;
+      navigateTo("/transaction");
+    }
+  }
+};
+
+const handleLogin = async (evt) => {
   const username = event.target.username.value.trim();
   const password = event.target.password.value.trim();
 
@@ -16,7 +58,7 @@ const handleLogin = (evt) => {
     return;
   }
 
-  navigateTo("/transaction");
+  await doLogin(username, password);
 };
 </script>
 
@@ -44,7 +86,7 @@ const handleLogin = (evt) => {
             v-if="errorMessage"
             class="my-4 p-4 border-2 rounded-md bg-rp-dawn-love/10 dark:bg-rp-dawn-love/10 border-rp-dawn-love dark:border-rp-moon-love text-rp-dawn-love dark:text-rp-moon-love"
           >
-            This is error message
+            {{ errorMessage }}
           </div>
           <div class="flex flex-col mt-4">
             <label for="username"> Username </label>

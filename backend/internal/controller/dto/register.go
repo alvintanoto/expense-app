@@ -13,7 +13,7 @@ type RegisterRequestDTO struct {
 
 func (dto RegisterRequestDTO) Validate() error {
 	return validation.ValidateStruct(&dto,
-		validation.Field(&dto.Username, validation.Required, validation.Length(5, 30)),
+		validation.Field(&dto.Username, validation.Required, validation.Length(5, 30), is.Alphanumeric),
 		validation.Field(&dto.Email, validation.Required, is.Email),
 		validation.Field(&dto.Password, validation.Required, validation.Length(8, 30), is.Alphanumeric),
 	)

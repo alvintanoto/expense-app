@@ -1,6 +1,49 @@
 <script setup>
+definePageMeta({
+  middleware: ["authenticated"],
+});
+
 import { ref } from "vue";
+
+const accessTokenCookie = useCookie("access_token");
+const refreshTokenCookie = useCookie("refresh_token");
+
 const errorMessage = ref("");
+
+const doRegister = async (username, email, password) => {
+  const resp = await useFetch("/api/auth/register", {
+    method: "POST",
+    body: {
+      username: username,
+      email: email,
+      password: password,
+    },
+    onResponseError({ request, response, options }) {
+      if (response.status === 400) {
+        response._data.data.client_message =
+          response._data.data.client_message.replaceAll("; ", "\n");
+        errorMessage.value = response._data.data.client_message;
+        return;
+      }
+
+      if (response.status === 409) {
+        errorMessage.value = response._data.data.client_message;
+        return;
+      }
+
+      errorMessage.value = "cannot connect to server, please try again later";
+      return;
+    },
+  });
+
+  if (resp.data) {
+    if (resp.data.value.code === "20000") {
+      accessTokenCookie.value = resp.data.value.data.access_token;
+      refreshTokenCookie.value = resp.data.value.data.refresh_token;
+      navigateTo("/wallet/create")
+    }
+  }
+};
 
 const handleRegister = async (evt) => {
   const username = event.target.username.value.trim();
@@ -33,7 +76,7 @@ const handleRegister = async (evt) => {
     return;
   }
 
-  navigateTo("/wallet");
+  await doRegister(username, email, password);
 };
 </script>
 
@@ -59,7 +102,7 @@ const handleRegister = async (evt) => {
           <div class="text-lg font-bold">Register</div>
           <div
             v-if="errorMessage"
-            class="my-4 p-4 border-2 rounded-md bg-rp-dawn-love/10 dark:bg-rp-dawn-love/10 border-rp-dawn-love dark:border-rp-moon-love text-rp-dawn-love dark:text-rp-moon-love"
+            class="my-4 p-4 whitespace-pre-wrap border-2 rounded-md bg-rp-dawn-love/10 dark:bg-rp-dawn-love/10 border-rp-dawn-love dark:border-rp-moon-love text-rp-dawn-love dark:text-rp-moon-love"
           >
             {{ errorMessage }}
           </div>

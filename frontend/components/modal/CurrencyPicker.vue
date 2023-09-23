@@ -1,18 +1,20 @@
 <script setup>
 import { ref } from "vue";
 
-const emit = defineEmits(['onCurrencySelected'])
+const emit = defineEmits(["onCurrencySelected"]);
 const currencies = ref([]);
 
 const fetchCurrencyData = async () => {
   const { data } = await useFetch("/api/currency");
 
   if (!data.value) {
+    // TODO: handle cannot connect to server error
     console.log("handle cannot connect to server error");
     return;
   }
 
   if (data.value.code !== "20000") {
+    // TODO: handle bad request error
     console.log("handle bad request error");
     return;
   }
@@ -20,11 +22,12 @@ const fetchCurrencyData = async () => {
   currencies.value = data.value.data;
 };
 
-const onCurrencySelected = (currency)=>{
-    emit('onCurrencySelected', currency)
-}
+const onCurrencySelected = (currency) => {
+  emit("onCurrencySelected", currency);
+};
 
 fetchCurrencyData();
+// TODO: search currency
 </script>
 
 <template>

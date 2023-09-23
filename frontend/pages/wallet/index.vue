@@ -1,4 +1,8 @@
 <script setup>
+definePageMeta({
+  middleware: ["authenticated"],
+});
+
 const layout = "client";
 </script>
 

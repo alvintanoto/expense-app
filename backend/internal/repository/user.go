@@ -13,6 +13,7 @@ type (
 	UserRepository interface {
 		CreateUser(*entity.User) error
 		GetActiveUserByUsername(username string) (*entity.User, error)
+		GetActiveUserByUserID(id string) (*entity.User, error)
 	}
 
 	implUser struct {
@@ -65,6 +66,39 @@ func (i *implUser) GetActiveUserByUsername(username string) (user *entity.User, 
 				WHERE username = $1 AND is_deleted = false AND is_active = true`
 
 	err = i.db.QueryRow(query, username).Scan(
+		&user.ID,
+		&user.Username,
+		&user.Email,
+		&user.Password,
+		&user.IsActive,
+		&user.CreatedAt,
+		&user.CreatedBy,
+		&user.UpdatedAt,
+		&user.UpdatedBy,
+		&user.IsDeleted,
+	)
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			i.logger.Error("no record found")
+			return nil, ErrorRecordNotFound
+		default:
+			i.logger.Error("scan row into struct error")
+			return nil, err
+		}
+	}
+
+	return user, nil
+}
+
+func (i *implUser) GetActiveUserByUserID(id string) (user *entity.User, err error) {
+	user = new(entity.User)
+	query := `SELECT id, username, email, password, is_active, 
+				created_at, created_by, updated_at, updated_by, is_deleted 
+				FROM public.users
+				WHERE id = $1 AND is_deleted = false AND is_active = true`
+
+	err = i.db.QueryRow(query, id).Scan(
 		&user.ID,
 		&user.Username,
 		&user.Email,

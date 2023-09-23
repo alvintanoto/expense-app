@@ -35,6 +35,8 @@ func (i *implRegistration) RegisterUser(ctx echo.Context) error {
 
 	if err := payload.Validate(); err != nil {
 		i.logger.Error(err)
+		badRequestResp := response.BadRequestError
+		badRequestResp.Response.ClientMessage = err.Error()
 		return ctx.JSON(response.BadRequestError.HttpCode, response.BadRequestError.Response)
 	}
 
