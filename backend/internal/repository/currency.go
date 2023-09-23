@@ -41,7 +41,7 @@ func (i *implCurrency) GetCurrencies() (currencies []entity.Currency, err error)
 	for rows.Next() {
 		var currency entity.Currency
 
-		err = rows.Scan(&currency.ID, &currency.CurrencyName, &currency.CurrencyCode, &currency.CurrencyName, &currency.CurrencyMinorUnits)
+		err = rows.Scan(&currency.ID, &currency.CurrencyName, &currency.CurrencyCode, &currency.CurrencyNumber, &currency.CurrencyMinorUnits)
 		if err != nil {
 			if err != nil {
 				i.logger.Errorf("scan row into struct error: %v", err)
