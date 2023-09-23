@@ -23,6 +23,8 @@ const getProfileNavigationColor = () => {
   <div
     class="flex flex-row min-h-screen bg-gray-200 bg-rp-dawn-overlay dark:bg-rp-moon-base text-rp-dawn-text dark:text-rp-moon-text"
   >
+    <!-- modal -->
+    <div><slot name="modal"/></div>
     <!-- body -->
     <div class="flex flex-row flex-1">
       <!-- left navigation -->
