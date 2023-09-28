@@ -9,8 +9,7 @@ const accessTokenCookie = useCookie("access_token");
 const refreshTokenCookie = useCookie("refresh_token");
 const errorMessage = ref("");
 
-
-const doLogin = async (username, password) => {
+const doLogin = async (evt, username, password) => {
   const resp = await useFetch("/api/auth/login", {
     method: "POST",
     body: {
@@ -40,6 +39,7 @@ const doLogin = async (username, password) => {
       accessTokenCookie.value = resp.data.value.data.access_token;
       refreshTokenCookie.value = resp.data.value.data.refresh_token;
       navigateTo("/transaction");
+      evt.target.reset();
     }
   }
 };
@@ -58,7 +58,7 @@ const handleLogin = async (evt) => {
     return;
   }
 
-  await doLogin(username, password);
+  await doLogin(evt, username, password);
 };
 </script>
 

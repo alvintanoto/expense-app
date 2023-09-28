@@ -22,19 +22,24 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
         authorization: "Bearer " + accessTokenCookie.value,
       },
     });
-    if (rtData?.data?.value?.code === "40103") {
-      accessTokenCookie.value = null;
-      refreshTokenCookie.value = null;
-    }
 
     if (rtData?.data?.value?.access_token) {
       accessTokenCookie.value = rtData.data.value.access_token;
       refreshTokenCookie.value = rtData.data.value.refresh_token;
-    } 
+    } else {
+      accessTokenCookie.value = null;
+      refreshTokenCookie.value = null;
+    }
 
   }
 
   if (ctData.data?.value.code === "40103") {
+    // fail refreshing data
+    accessTokenCookie.value = null;
+    refreshTokenCookie.value = null;
+  }
+
+  if (ctData.data?.value.code === "40104") {
     // fail refreshing data
     accessTokenCookie.value = null;
     refreshTokenCookie.value = null;

@@ -10,7 +10,7 @@ const refreshTokenCookie = useCookie("refresh_token");
 
 const errorMessage = ref("");
 
-const doRegister = async (username, email, password) => {
+const doRegister = async (evt, username, email, password) => {
   const resp = await useFetch("/api/auth/register", {
     method: "POST",
     body: {
@@ -41,6 +41,7 @@ const doRegister = async (username, email, password) => {
       accessTokenCookie.value = resp.data.value.data.access_token;
       refreshTokenCookie.value = resp.data.value.data.refresh_token;
       navigateTo("/wallet/create")
+      evt.target.reset()
     }
   }
 };
@@ -76,7 +77,7 @@ const handleRegister = async (evt) => {
     return;
   }
 
-  await doRegister(username, email, password);
+  await doRegister(evt, username, email, password);
 };
 </script>
 
