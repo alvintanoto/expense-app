@@ -104,7 +104,7 @@ func (i *middlewareImpl) IsAuthenticated(next echo.HandlerFunc) echo.HandlerFunc
 			case jwt.ValidationErrorSignatureInvalid:
 				return ctx.JSON(response.TokenSignatureInvalid.HttpCode, response.TokenSignatureInvalid.Response)
 			default:
-				return ctx.JSON(response.TokenExpiredError.HttpCode, response.TokenExpiredError.Response)
+				return ctx.JSON(response.InvalidTokenError.HttpCode, response.InvalidTokenError.Response)
 			}
 		}
 

@@ -4,7 +4,8 @@ import "net/http"
 
 var (
 	// 2xx
-	Success = NewMessage().SendResponse(http.StatusOK, "20000", "success", "success")
+	Success                 = NewMessage().SendResponse(http.StatusOK, "20000", "success", "success")
+	SuccessCreateUserWallet = NewMessage().SendResponse(http.StatusCreated, "20100", "success created user wallet", "Success created user wallet.")
 
 	// 4xx
 	BadRequestError = NewMessage().SendResponse(http.StatusBadRequest, "40000", "Bad Request", "Oops! Your request couldn't be processed. Please check your input and try again.")
@@ -22,7 +23,7 @@ var (
 	UserNotFoundError   = NewMessage().SendResponse(http.StatusNotFound, "40402", "User not found", "User not registered, please register to continue.")
 
 	ConflictError               = NewMessage().SendResponse(http.StatusConflict, "40900", "Conflict", "Conflict")
-	UsernameOrEmailAlreadyExist = NewMessage().SendResponse(http.StatusConflict, "409", "Username or email already taken", "Username or email is already used. Please choose another.")
+	UsernameOrEmailAlreadyExist = NewMessage().SendResponse(http.StatusConflict, "40900", "Username or email already taken", "Username or email is already used. Please choose another.")
 
 	// 5xx
 	InternalServerError = NewMessage().SendResponse(http.StatusInternalServerError, "50000", "Internal Server Error", "Internal Server Error. Please try again later.")

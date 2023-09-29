@@ -15,6 +15,7 @@ type Holder struct {
 	RegistrationHandler   RegistrationHandler
 
 	CurrencyHandler CurrencyHandler
+	UserHandler     UserHandler
 }
 
 func Register(container *dig.Container) error {
@@ -31,6 +32,10 @@ func Register(container *dig.Container) error {
 	}
 
 	if err := container.Provide(NewCurrencyHandler); err != nil {
+		return err
+	}
+
+	if err := container.Provide(NewUserHandler); err != nil {
 		return err
 	}
 
@@ -55,7 +60,12 @@ func (c Holder) Routes(app *echo.Echo) {
 	// TODO: Cache currency data 24Hour
 	v1.GET("/currencies", c.CurrencyHandler.GetCurrencies)
 
-	// TODO: wallets
+	// TODO: users (everything about user will be here)
+	user := v1.Group("/user")
+	user.Use(c.Middleware.IsAuthenticated)
+
+	userWallet := user.Group("/wallet")
+	userWallet.POST("", c.UserHandler.CreateUserWallet)
 }
 
 func (h *Holder) setupEcho(app *echo.Echo) {

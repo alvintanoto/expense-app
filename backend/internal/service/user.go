@@ -12,6 +12,10 @@ import (
 type (
 	UserService interface {
 		Register(username, email, password string) error
+
+		// Create user wallet then after creating wallet this process will populate
+		// categories for the wallet and insert one initial balance data.
+		CreateUserWallet(userID, walletName, currencyID, initialBalance string) error
 	}
 
 	implUser struct {
@@ -41,6 +45,24 @@ func (i *implUser) Register(username, email, password string) error {
 	user.IsActive = true
 
 	if err = i.repository.UserRepository.CreateUser(&user); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (i *implUser) CreateUserWallet(userID, walletName, currencyID, initialBalance string) (err error) {
+	wallet := &entity.Wallet{
+		ID:         uuid.NewString(),
+		UserID:     userID,
+		CurrencyID: currencyID,
+		WalletName: walletName,
+		GeneralData: entity.GeneralData{
+			CreatedBy: userID,
+		},
+	}
+
+	if err = i.repository.WalletRepository.CreateWallet(wallet); err != nil {
 		return err
 	}
 
