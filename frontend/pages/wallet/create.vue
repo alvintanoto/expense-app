@@ -4,10 +4,17 @@ definePageMeta({
 });
 
 import { ref } from "vue";
+
+const currencyStore = useCurrenciesStore();
+const { data } = await useAsyncData('currency', () => currencyStore.getCurrencies())
+
 const layout = "client";
 
 const isCurrencyPickerShown = ref(false);
-const selectedCurrency = ref({ currency: 'USD' })
+const selectedCurrency = ref({
+  currency: currencyStore.currencyList[5].currency_code,
+  currency_id: currencyStore.currencyList[5].id,
+});
 
 const showCurrencyPicker = () => {
   isCurrencyPickerShown.value = true;
@@ -18,13 +25,12 @@ const closeAllModal = () => {
 };
 
 const onCurrencySelected = (currency) => {
-    closeAllModal()
+  closeAllModal();
 
-    selectedCurrency.value = {
-        currency: currency.currency_code
-    }
-}
-
+  selectedCurrency.value = {
+    currency: currency.currency_code,
+  };
+};
 </script>
 
 <template>
@@ -75,7 +81,7 @@ const onCurrencySelected = (currency) => {
               <div
                 class="cursor-pointer mx-2 text-rp-dawn-text dark:text-rp-moon-text"
               >
-                {{selectedCurrency.currency}}
+                {{ selectedCurrency.currency }}
               </div>
               <div class="cursor-pointer max-h-[24px]">
                 <IconChevronRight />

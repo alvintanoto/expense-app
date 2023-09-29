@@ -1,6 +1,5 @@
-
 export default defineEventHandler(async (event) => {
-const config = useRuntimeConfig();
+  const config = useRuntimeConfig();
 
   if (event.node.req.method == "POST") {
     const data = await $fetch(config.baseUrl + config.loginEndpoint, {
@@ -16,7 +15,7 @@ const config = useRuntimeConfig();
       },
     });
 
-    return data
+    return data;
   }
 
   setResponseStatus(event, 405);

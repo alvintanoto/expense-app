@@ -18,7 +18,10 @@ export default defineNuxtConfig({
   },
   devtools: { enabled: true },
   modules: [["@pinia/nuxt", {
-    autoImports: ['defineStore', 'definePiniaStore']
+    autoImports: [
+      'defineStore',  
+      ['defineStore', 'definePiniaStore']
+    ]
   }]],
   imports: {
     dirs: ["stores"]

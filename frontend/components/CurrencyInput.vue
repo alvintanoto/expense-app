@@ -1,5 +1,5 @@
 <script setup>
-import { defineProps, toRefs } from "vue";
+import { toRefs } from "vue";
 import { useCurrencyInput } from "vue-currency-input";
 
 const props = defineProps(["modelValue", "options"]);

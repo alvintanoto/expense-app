@@ -19,8 +19,5 @@
     "@pinia/nuxt": "^0.4.11",
     "pinia": "^2.1.6",
     "vue-currency-input": "^3.0.5"
-  },
-  "overrides": {
-    "vue": "latest"
   }
 }
