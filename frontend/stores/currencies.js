@@ -1,5 +1,3 @@
-import { defineStore } from "pinia";
-
 export const useCurrenciesStore = defineStore("currencies", {
   state: () => ({
     currencies: [],
@@ -38,8 +36,8 @@ export const useCurrenciesStore = defineStore("currencies", {
 
         return state.currencies.filter((item) => {
             if (
-              item.currency_code.includes(state.filter) ||
-              item.currency_name.includes(state.filter)
+              item.currency_code.toLowerCase().includes(state.filter.toLowerCase()) ||
+              item.currency_name.toLowerCase().includes(state.filter.toLowerCase())
             ) {
               return item;
             }

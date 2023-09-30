@@ -6,14 +6,22 @@ definePageMeta({
 import { ref } from "vue";
 
 const currencyStore = useCurrenciesStore();
-const { data } = await useAsyncData('currency', () => currencyStore.getCurrencies())
+const walletStore = useWalletStore();
+
+const { data } = await useAsyncData("currency", () =>
+  currencyStore.getCurrencies()
+);
 
 const layout = "client";
 
+const errorMessage = ref("");
+const initialBalance = ref("0");
 const isCurrencyPickerShown = ref(false);
+
 const selectedCurrency = ref({
   currency: currencyStore.currencyList[5].currency_code,
   currency_id: currencyStore.currencyList[5].id,
+  locale: "nl-NL",
 });
 
 const showCurrencyPicker = () => {
@@ -28,8 +36,52 @@ const onCurrencySelected = (currency) => {
   closeAllModal();
 
   selectedCurrency.value = {
+    currency_id: currency.id,
     currency: currency.currency_code,
   };
+};
+
+const handleCreateWallet = async (event) => {
+  const walletName = event.target.wallet_name.value.trim();
+
+  if (walletName === "") {
+    errorMessage.value = "Wallet name is required";
+    return;
+  }
+
+  if (walletName.length > 20) {
+    errorMessage.value = "Wallet name length cannot be more than 20 character";
+    return;
+  }
+
+  errorMessage.value = "";
+
+  let res = await walletStore.createWallet(
+    walletName,
+    selectedCurrency.value.currency_id,
+    String(initialBalance.value)
+  );
+
+  if (res.error) {
+    if (res.error.code === "40000") {
+      errorMessage.value = res.error.client_message.replaceAll("; ", "\n");
+      errorMessage.value = res.error.client_message;
+      console.log("masuk sini");
+      return;
+    }
+
+    errorMessage = "Server unavailable, please try again later.";
+    return;
+  }
+  
+  if (res.data.code === "20100") {
+    // success redirect to wallet
+    navigateTo("/wallet")
+    event.target.reset();
+    initialBalance.value = 0
+    return
+  }
+  return;
 };
 </script>
 
@@ -44,73 +96,89 @@ const onCurrencySelected = (currency) => {
         <ModalCurrencyPicker @onCurrencySelected="onCurrencySelected" /></div
     ></template>
     <template #header> </template>
+    <template #err_message>
+      <div
+        v-if="errorMessage !== ''"
+        class="min-w-[786px] mx-auto my-4 p-4 border-2 rounded-md bg-rp-dawn-love/10 dark:bg-rp-dawn-love/10 border-rp-dawn-love dark:border-rp-moon-love text-rp-dawn-love dark:text-rp-moon-love"
+      >
+        {{ errorMessage }}
+      </div>
+    </template>
     <template #container>
       <div class="p-4 font-bold border-b-[1px]">Create a new wallet!</div>
-      <div class="p-4 mt-4">
-        <div
-          class="border-[1px] rounded-md border-rp-dawn-text/20 dark:border-rp-moon-text/50 hover:border-rp-dawn-text dark:hover:border-rp-moon-text"
-        >
-          <div
-            class="text-[12px] mx-2 mt-2 text-rp-dawn-text/50 dark:text-rp-moon-text/75"
-          >
-            Wallet Name
-          </div>
-          <div class="mx-2 py-2">
-            <input
-              type="text"
-              placeholder="Type your wallet name"
-              class="w-full outline-none bg-rp-dawn-surface dark:bg-rp-moon-surface"
-            />
-          </div>
-        </div>
-
-        <div class="flex flex-row mt-2">
+      <form @submit.prevent="handleCreateWallet($event)">
+        <div class="p-4 mt-4">
           <div
             class="border-[1px] rounded-md border-rp-dawn-text/20 dark:border-rp-moon-text/50 hover:border-rp-dawn-text dark:hover:border-rp-moon-text"
           >
             <div
-              class="cursor-pointer text-[12px] mx-2 mt-2 text-rp-dawn-text/50 dark:text-rp-moon-text/75"
-            >
-              Currency
-            </div>
-            <div
-              class="cursor-pointer flex flex-row mx-2 py-2"
-              @click="showCurrencyPicker"
-            >
-              <div class="cursor-pointer"><IconCurrency /></div>
-              <div
-                class="cursor-pointer mx-2 text-rp-dawn-text dark:text-rp-moon-text"
-              >
-                {{ selectedCurrency.currency }}
-              </div>
-              <div class="cursor-pointer max-h-[24px]">
-                <IconChevronRight />
-              </div>
-            </div>
-          </div>
-
-          <div
-            class="border-[1px] ml-2 flex-1 rounded-md border-rp-dawn-text/20 dark:border-rp-moon-text/50 hover:border-rp-dawn-text dark:hover:border-rp-moon-text"
-          >
-            <div
               class="text-[12px] mx-2 mt-2 text-rp-dawn-text/50 dark:text-rp-moon-text/75"
             >
-              Starting Balance
+              Wallet Name
             </div>
             <div class="mx-2 py-2">
-              <CurrencyInput modelValue="0" :options="selectedCurrency" />
+              <input
+                type="text"
+                name="wallet_name"
+                placeholder="Type your wallet name"
+                class="w-full outline-none bg-rp-dawn-surface dark:bg-rp-moon-surface"
+              />
             </div>
           </div>
-        </div>
 
-        <div class="flex flex-row mt-4 justify-end">
-          <button
-            class="text-sm rounded-md px-8 py-2 text-rp-dawn-surface bg-rp-dawn-text dark:text-rp-moon-surface dark:bg-rp-moon-text"
-          >
-            Save
-          </button>
+          <div class="flex flex-row mt-2">
+            <div
+              class="border-[1px] rounded-md border-rp-dawn-text/20 dark:border-rp-moon-text/50 hover:border-rp-dawn-text dark:hover:border-rp-moon-text"
+            >
+              <div
+                class="cursor-pointer text-[12px] mx-2 mt-2 text-rp-dawn-text/50 dark:text-rp-moon-text/75"
+              >
+                Currency
+              </div>
+              <div
+                class="cursor-pointer flex flex-row mx-2 py-2"
+                @click="showCurrencyPicker"
+              >
+                <div class="cursor-pointer"><IconCurrency /></div>
+                <div
+                  class="cursor-pointer mx-2 text-rp-dawn-text dark:text-rp-moon-text"
+                >
+                  {{ selectedCurrency.currency }}
+                </div>
+                <div class="cursor-pointer max-h-[24px]">
+                  <IconChevronRight />
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="border-[1px] ml-2 flex-1 rounded-md border-rp-dawn-text/20 dark:border-rp-moon-text/50 hover:border-rp-dawn-text dark:hover:border-rp-moon-text"
+            >
+              <div
+                class="text-[12px] mx-2 mt-2 text-rp-dawn-text/50 dark:text-rp-moon-text/75"
+              >
+                Starting Balance
+              </div>
+              <div class="mx-2 py-2">
+                <CurrencyInput
+                  v-model="initialBalance"
+                  :modelValue="initialBalance"
+                  :options="selectedCurrency"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="flex flex-row mt-4 justify-end">
+            <button
+              @click="submit"
+              class="text-sm rounded-md px-8 py-2 text-rp-dawn-surface bg-rp-dawn-text dark:text-rp-moon-surface dark:bg-rp-moon-text"
+            >
+              Save
+            </button>
+          </div>
         </div>
-      </div>
+      </form>
     </template>
   </NuxtLayout>
 </template>

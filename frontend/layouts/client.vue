@@ -24,7 +24,7 @@ const getProfileNavigationColor = () => {
     class="flex flex-row min-h-screen bg-gray-200 bg-rp-dawn-overlay dark:bg-rp-moon-base text-rp-dawn-text dark:text-rp-moon-text"
   >
     <!-- modal -->
-    <div><slot name="modal"/></div>
+    <div><slot name="modal" /></div>
     <!-- body -->
     <div class="flex flex-row flex-1">
       <!-- left navigation -->
@@ -92,7 +92,9 @@ const getProfileNavigationColor = () => {
         <div class="h-[64px] w-full bg-rp-dawn-surface dark:bg-rp-moon-surface">
           <slot name="header" />
         </div>
-        <div class="flex container-xl mx-8 mt-8">
+        <div class="flex flex-col container-xl mx-8 mt-4">
+          <slot name="err_message" />
+
           <div
             class="w-max min-w-[786px] rounded-md container-md mx-auto bg-rp-dawn-surface dark:bg-rp-moon-surface drop-shadow-xl"
           >

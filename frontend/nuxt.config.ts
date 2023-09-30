@@ -8,6 +8,7 @@ export default defineNuxtConfig({
     checkTokenEndpoint: process.env.CHECK_TOKEN_ENDPOINT,
     refreshTokenEndpoint: process.env.REFRESH_TOKEN_ENDPOINT,
     currencyEndpoint: process.env.CURRENCY_ENDPOINT,
+    createWalletEndpoint: process.env.CREATE_WALLET_ENDPOINT,
   },
   css: ["~/assets/base.css"],
   postcss: {
@@ -17,13 +18,15 @@ export default defineNuxtConfig({
     },
   },
   devtools: { enabled: true },
-  modules: [["@pinia/nuxt", {
-    autoImports: [
-      'defineStore',  
-      ['defineStore', 'definePiniaStore']
-    ]
-  }]],
+  modules: [
+    [
+      "@pinia/nuxt",
+      {
+        autoImports: ["defineStore", ["defineStore", "definePiniaStore"]],
+      },
+    ],
+  ],
   imports: {
-    dirs: ["stores"]
-  }
+    dirs: ["stores"],
+  },
 });

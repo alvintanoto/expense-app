@@ -5,10 +5,9 @@ import { useCurrencyInput } from "vue-currency-input";
 const props = defineProps(["modelValue", "options"]);
 const data = toRefs(props);
 
-const {  inputRef,
-      formattedValue,
-      setOptions,
-      setValue } = useCurrencyInput(data.options.value);
+const { inputRef, formattedValue, setOptions, setValue } = useCurrencyInput(
+  data.options.value
+);
 
 watch(
   () => data.options.value,
