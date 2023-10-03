@@ -11,6 +11,7 @@ import (
 type (
 	CurrencyRepository interface {
 		GetCurrencies() (currencies []entity.Currency, err error)
+		GetCurrencyByID(ctx context.Context, currencyID string) (*entity.Currency, error)
 	}
 
 	implCurrency struct {
@@ -53,4 +54,29 @@ func (i *implCurrency) GetCurrencies() (currencies []entity.Currency, err error)
 	}
 
 	return currencies, nil
+}
+
+func (i *implCurrency) GetCurrencyByID(ctx context.Context, currencyID string) (currency *entity.Currency, err error) {
+	query := `SELECT id, currency_name, currency_code FROM currencies WHERE id = $1`
+	currency = new(entity.Currency)
+
+	args := []interface{}{
+		currencyID,
+	}
+
+	rows := i.db.QueryRowContext(ctx, query, args...)
+	if rows.Err() != nil {
+		i.logger.Errorf("error getting currency: %+v", err)
+		return nil, rows.Err()
+	}
+
+	err = rows.Scan(&currency.ID, &currency.CurrencyName, &currency.CurrencyCode)
+	if err != nil {
+		if err != nil {
+			i.logger.Error("scan row into struct error")
+			return nil, err
+		}
+	}
+
+	return currency, nil
 }

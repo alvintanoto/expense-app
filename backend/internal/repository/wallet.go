@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"context"
 	"database/sql"
 	"expense_app/internal/entity"
 	"expense_app/internal/util/logger"
@@ -9,6 +10,7 @@ import (
 type (
 	WalletRepository interface {
 		CreateWallet(*entity.Wallet) error
+		GetWalletsByUserID(ctx context.Context, userID string) (wallets []entity.Wallet, err error)
 	}
 
 	implWallet struct {
@@ -41,4 +43,38 @@ func (i *implWallet) CreateWallet(wallet *entity.Wallet) error {
 	}
 
 	return nil
+}
+
+func (i *implWallet) GetWalletsByUserID(ctx context.Context, userID string) (wallets []entity.Wallet, err error) {
+	query := `SELECT id, wallet_name, currency_id FROM wallets WHERE user_id = $1 AND is_deleted=false`
+
+	args := []interface{}{
+		userID,
+	}
+
+	rows, err := i.db.QueryContext(ctx, query, args...)
+	if err != nil {
+		i.logger.Errorf("error getting wallet: %+v", err)
+		return nil, err
+	}
+
+	if rows.Err() != nil {
+		i.logger.Errorf("error getting wallet: %+v", err)
+		return nil, rows.Err()
+	}
+
+	for rows.Next() {
+		var wallet entity.Wallet
+		err = rows.Scan(&wallet.ID, &wallet.WalletName, &wallet.CurrencyID)
+		if err != nil {
+			if err != nil {
+				i.logger.Error("scan row into struct error")
+				return nil, err
+			}
+		}
+
+		wallets = append(wallets, wallet)
+	}
+
+	return wallets, nil
 }

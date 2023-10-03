@@ -1,6 +1,8 @@
 package service
 
 import (
+	"context"
+	"expense_app/internal/controller/dto"
 	"expense_app/internal/entity"
 	"expense_app/internal/repository"
 	"expense_app/internal/util/logger"
@@ -14,8 +16,10 @@ type (
 		Register(username, email, password string) error
 
 		// Create user wallet then after creating wallet this process will populate
-		// categories for the wallet and insert one initial balance data.
+		// TODO: categories for the wallet and insert one initial balance data.
+		// TODO: limit user wallet to 1 (free tier)/ 3 wallet
 		CreateUserWallet(userID, walletName, currencyID, initialBalance string) error
+		GetUserWallet(ctx context.Context, userID string) ([]*dto.UserWalletResponseDTO, error)
 	}
 
 	implUser struct {
@@ -67,4 +71,32 @@ func (i *implUser) CreateUserWallet(userID, walletName, currencyID, initialBalan
 	}
 
 	return nil
+}
+
+func (i *implUser) GetUserWallet(ctx context.Context, userID string) (data []*dto.UserWalletResponseDTO, err error) {
+	wallets, err := i.repository.WalletRepository.GetWalletsByUserID(ctx, userID)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, wallet := range wallets {
+		currency, err := i.repository.CurrencyRepository.GetCurrencyByID(ctx, wallet.CurrencyID)
+		if err != nil {
+			return nil, err
+		}
+
+		data = append(data, &dto.UserWalletResponseDTO{
+			UserWallet: dto.UserWalletDTO{
+				WalletID:   wallet.ID,
+				WalletName: wallet.WalletName,
+			},
+			Currency: dto.UserWalletCurrencyDTO{
+				CurrencyID:   currency.ID,
+				CurrencyName: currency.CurrencyName,
+				CurrencyCode: currency.CurrencyCode,
+			},
+		})
+	}
+
+	return data, nil
 }

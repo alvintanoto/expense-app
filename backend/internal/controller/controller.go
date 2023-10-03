@@ -65,6 +65,7 @@ func (c Holder) Routes(app *echo.Echo) {
 	user.Use(c.Middleware.IsAuthenticated)
 
 	userWallet := user.Group("/wallet")
+	userWallet.GET("", c.UserHandler.GetUserWallet)
 	userWallet.POST("", c.UserHandler.CreateUserWallet)
 }
 

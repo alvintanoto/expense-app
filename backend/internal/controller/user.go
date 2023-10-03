@@ -12,7 +12,8 @@ import (
 
 type (
 	UserHandler interface {
-		CreateUserWallet(ctx echo.Context) error
+		CreateUserWallet(ctx echo.Context) error // user wallet
+		GetUserWallet(ctx echo.Context) error    // user walelt
 	}
 
 	implUser struct {
@@ -48,5 +49,19 @@ func (i *implUser) CreateUserWallet(ctx echo.Context) error {
 	}
 
 	resp := response.SuccessCreateUserWallet
+	return ctx.JSON(resp.HttpCode, resp.Response)
+}
+
+func (i *implUser) GetUserWallet(ctx echo.Context) error {
+	var claims *session.UserSessionData
+	claims = ctx.Get("session").(*session.UserSessionData)
+
+	wallets, err := i.services.UserService.GetUserWallet(ctx.Request().Context(), claims.ID)
+	if err != nil {
+		return ctx.JSON(response.InternalServerError.HttpCode, response.InternalServerError.Response)
+	}
+
+	resp := response.Success
+	resp.Response.Data = wallets
 	return ctx.JSON(resp.HttpCode, resp.Response)
 }
