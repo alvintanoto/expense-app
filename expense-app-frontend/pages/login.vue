@@ -25,8 +25,6 @@ const handleLogin = async (evt) => {
 };
 
 const doLogin = async (evt, username, password) => {
-  // TODO: login 
-  // if user has wallet navigate to /wallet
   const error = await login(username, password) 
   if (error) {
     if (error.includes(';')) {
@@ -35,6 +33,7 @@ const doLogin = async (evt, username, password) => {
     }
 
     errorMessage.value = error;
+    return
   }
 
   navigateTo("/transaction");

@@ -3,9 +3,23 @@ definePageMeta({
   middleware: ["authenticated"],
 });
 
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 
-// TODO: Get Currencies
+const currencyStore = useCurrencyStore();
+
+if (currencyStore.currencies.length === 0) {
+  const [data, error] = await fetchCurrencies()
+  if (error) {
+    if (error?.code === '40101') {
+      navigateTo('/login')
+    }
+
+    // TODO: add error message
+  } else {
+      currencyStore.currencies = data
+  }
+}
+
 
 const layout = "client";
 
@@ -15,8 +29,8 @@ const isCurrencyPickerShown = ref(false);
 
 // TODO: Get local locale
 const selectedCurrency = ref({
-  currency: "",
-  currency_id: "",
+  currency: currencyStore.currencyList[5].currency_code,
+  currency_id: currencyStore.currencyList[5].id,
   locale: "nl-NL",
 });
 

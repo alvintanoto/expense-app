@@ -15,11 +15,16 @@ export async function login (username, password) {
             return [null, error.value.data.client_message]
         }
 
+
+        if (error?.value?.data?.client_message) {
+            return [null, error.value.data.client_message]
+        }
+
         return "Could not connect to server, please try again later"
     }
-    
-    const store = useAuthStore();
-    store.accessToken = data.value.data.access_token;
-    store.refreshToken = data.value.data.refresh_token;
+
+    const authStore = useAuthStore();
+    authStore.accessToken = data.value.data.access_token;
+    authStore.refreshToken = data.value.data.refresh_token;
     return null
 }
