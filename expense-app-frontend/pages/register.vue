@@ -10,6 +10,7 @@ const errorMessage = ref("");
 const doRegister = async (evt, username, email, password) => {
   // TODO: do register
   navigateTo("/wallet/create")
+  evt.target.reset();
 };
 
 const handleRegister = async (evt) => {

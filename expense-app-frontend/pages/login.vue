@@ -5,6 +5,8 @@ definePageMeta({
 
 import { ref } from "vue";
 
+const errorMessage = ref("");
+
 const handleLogin = async (evt) => {
   const username = event.target.username.value.trim();
   const password = event.target.password.value.trim();
@@ -25,7 +27,18 @@ const handleLogin = async (evt) => {
 const doLogin = async (evt, username, password) => {
   // TODO: login 
   // if user has wallet navigate to /wallet
+  const error = await login(username, password) 
+  if (error) {
+    if (error.includes(';')) {
+      errorMessage.value = error.replaceAll("; ", "\n");
+      return
+    }
+
+    errorMessage.value = error;
+  }
+
   navigateTo("/transaction");
+  evt.target.reset();
 };
 </script>
 
@@ -51,7 +64,7 @@ const doLogin = async (evt, username, password) => {
           <div class="text-lg font-bold">Login</div>
           <div
             v-if="errorMessage"
-            class="my-4 p-4 border-2 rounded-md bg-rp-dawn-love/10 dark:bg-rp-dawn-love/10 border-rp-dawn-love dark:border-rp-moon-love text-rp-dawn-love dark:text-rp-moon-love"
+            class="whitespace-pre-wrap my-4 p-4 border-2 rounded-md bg-rp-dawn-love/10 dark:bg-rp-dawn-love/10 border-rp-dawn-love dark:border-rp-moon-love text-rp-dawn-love dark:text-rp-moon-love"
           >
             {{ errorMessage }}
           </div>
