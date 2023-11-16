@@ -53,8 +53,7 @@ func (i *implUser) CreateUserWallet(ctx echo.Context) error {
 }
 
 func (i *implUser) GetUserWallet(ctx echo.Context) error {
-	var claims *session.UserSessionData
-	claims = ctx.Get("session").(*session.UserSessionData)
+	claims := ctx.Get("session").(*session.UserSessionData)
 
 	wallets, err := i.services.UserService.GetUserWallet(ctx.Request().Context(), claims.ID)
 	if err != nil {

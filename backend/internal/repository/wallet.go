@@ -46,7 +46,7 @@ func (i *implWallet) CreateWallet(wallet *entity.Wallet) error {
 }
 
 func (i *implWallet) GetWalletsByUserID(ctx context.Context, userID string) (wallets []entity.Wallet, err error) {
-	query := `SELECT id, wallet_name, currency_id FROM wallets WHERE user_id = $1 AND is_deleted=false`
+	query := `SELECT id, wallet_name, currency_id FROM wallets WHERE user_id = $1 AND is_deleted=false ORDER BY updated_at DESC`
 
 	args := []interface{}{
 		userID,

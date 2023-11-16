@@ -52,21 +52,25 @@ func (c Holder) Routes(app *echo.Echo) {
 
 	// TODO: user authentication & authorization
 	auth := v1.Group("/authentication")
-	auth.POST("/login", c.AuthenticationHandler.Login)
-	auth.GET("/check_token", c.AuthenticationHandler.CheckToken, c.Middleware.IsAuthenticated)
-	auth.POST("/refresh_token", c.AuthenticationHandler.RefreshToken, c.Middleware.RefreshTokenAuthentication)
-	auth.GET("/logout", c.AuthenticationHandler.Logout, c.Middleware.IsAuthenticated)
+	{
+		auth.POST("/login", c.AuthenticationHandler.Login)
+		auth.GET("/check_token", c.AuthenticationHandler.CheckToken, c.Middleware.IsAuthenticated)
+		auth.POST("/refresh_token", c.AuthenticationHandler.RefreshToken, c.Middleware.RefreshTokenAuthentication)
+		auth.GET("/logout", c.AuthenticationHandler.Logout, c.Middleware.IsAuthenticated)
+	}
 
 	// TODO: Cache currency data 24Hour
-	v1.GET("/currencies", c.CurrencyHandler.GetCurrencies)
+	v1.GET("/currencies", c.CurrencyHandler.GetCurrencies, c.Middleware.IsAuthenticated)
 
 	// TODO: users (everything about user will be here)
 	user := v1.Group("/user")
 	user.Use(c.Middleware.IsAuthenticated)
 
 	userWallet := user.Group("/wallet")
-	userWallet.GET("", c.UserHandler.GetUserWallet)
-	userWallet.POST("", c.UserHandler.CreateUserWallet)
+	{
+		userWallet.GET("", c.UserHandler.GetUserWallet)
+		userWallet.POST("", c.UserHandler.CreateUserWallet)
+	}
 }
 
 func (h *Holder) setupEcho(app *echo.Echo) {
