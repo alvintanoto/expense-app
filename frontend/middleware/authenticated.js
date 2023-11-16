@@ -10,11 +10,20 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     }
   }
 
-  const ctData = await useFetch("/api/auth/check_token", {
+  const { data, error } = await useFetch("/api/auth/check_token", {
     headers: {
       authorization: "Bearer " + accessTokenCookie.value,
     },
   });
+
+  const ctData = data
+  if (!ctData.value) {
+    if (to.path == "/login" || to.path == "/register" || to.path == "/") {
+      return;
+    } else {
+      return navigateTo("/login");
+    }
+  }
 
   if (ctData.data?.value.code === "40101") {
     const rtData = await useFetch("/api/auth/refresh_token", {
