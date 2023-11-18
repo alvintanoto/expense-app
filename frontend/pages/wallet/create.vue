@@ -14,12 +14,11 @@ const errorMessage = ref("");
 const initialBalance = ref("0");
 const isCurrencyPickerShown = ref(false);
 
-// TODO: Get local locale
 const selectedCurrency = ref({});
 if (currencyStore.currencyList.length !== 0) {
   selectedCurrency.value = {
-    currency: currencyStore.currencyList[5].currency_code,
-    currency_id: currencyStore.currencyList[5].id,
+    currency: "USD",
+    currency_id: "44F3E104-9168-1719-EC0E-FC19AF211550",
     locale: "nl-NL",
   };
 }
