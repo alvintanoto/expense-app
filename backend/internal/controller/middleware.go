@@ -90,7 +90,7 @@ func (i *middlewareImpl) IsAuthenticated(next echo.HandlerFunc) echo.HandlerFunc
 			return ctx.JSON(response.InvalidTokenError.HttpCode, response.InvalidTokenError.Response)
 		}
 
-		tokenString := strings.Split(auth, " ")[1]
+		tokenString := strings.Replace(auth, "Bearer ", "", -1)
 		claims := &session.AuthenticationClaims{}
 		_, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
 			return []byte(i.config.AppSecretKey), nil
@@ -129,7 +129,7 @@ func (i *middlewareImpl) RefreshTokenAuthentication(next echo.HandlerFunc) echo.
 			return ctx.JSON(response.InvalidTokenError.HttpCode, response.InvalidTokenError.Response)
 		}
 
-		tokenString := strings.Split(auth, " ")[1]
+		tokenString := strings.Replace(auth, "Bearer ", "", -1)
 		claims := &session.AuthenticationClaims{}
 		_, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
 			return []byte(i.config.AppSecretKey), nil

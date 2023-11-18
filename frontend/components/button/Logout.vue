@@ -1,9 +1,17 @@
 <script setup>
 const router = useRouter();
 
+const authStore = useAuthStore();
+const currencyStore = useCurrencyStore();
+const walletStore = useWalletStore();
+
 const onLogoutClicked = async () => {
-    // TODO: LOGOUT PROCESS
-    router.push({path: "/login"})
+  // TODO: LOGOUT PROCESS
+  currencyStore.$reset();
+  authStore.$reset();
+  walletStore.$reset();
+
+  router.push({ path: "/login" });
 };
 </script>
 

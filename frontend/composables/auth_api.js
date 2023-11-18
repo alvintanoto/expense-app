@@ -14,15 +14,11 @@ export async function login (username, password) {
 
     if (error?.value) {
         if (error?.value?.data?.client_message) {
-            return [null, error.value.data.client_message]
+            globalStore.errorMessage = error.value.data.client_message;
+            return [null, error.value.data]
         }
 
-
-        if (error?.value?.data?.client_message) {
-            return [null, error.value.data.client_message]
-        }
-
-        return "Could not connect to server, please try again later"
+        return [null, "Could not connect to server, please try again later"]
     }
 
     const authStore = useAuthStore();

@@ -5,6 +5,7 @@ definePageMeta({
 
 import { ref } from "vue";
 
+const router = useRouter();
 const errorMessage = ref("");
 
 const handleLogin = async (evt) => {
@@ -36,7 +37,7 @@ const doLogin = async (evt, username, password) => {
     return;
   }
 
-  navigateTo("/transaction");
+  router.push({ path: "/transaction" });
   evt.target.reset();
 };
 </script>
