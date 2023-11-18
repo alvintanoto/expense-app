@@ -6,7 +6,7 @@ const currencyStore = useCurrencyStore();
 const walletStore = useWalletStore();
 
 const onLogoutClicked = async () => {
-  // TODO: LOGOUT PROCESS
+  // TODO: MOVE LOGOUT PROCESS TO COMPOSABLES
   currencyStore.$reset();
   authStore.$reset();
   walletStore.$reset();

@@ -1,3 +1,4 @@
+import { createWallet } from "~/composables/wallet_api";
 
 export const useWalletStore = defineStore("wallet", {
     state: () => ({
@@ -14,6 +15,9 @@ export const useWalletStore = defineStore("wallet", {
             }
 
             return null
+        },
+        async createWallet(walletName, currencyID, initialBalance) {
+            return await createWallet(walletName, currencyID, initialBalance)
         }
     },
     getters: {

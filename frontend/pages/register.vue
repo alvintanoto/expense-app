@@ -8,7 +8,6 @@ import { ref } from "vue";
 const errorMessage = ref("");
 
 const doRegister = async (evt, username, email, password) => {
-  // TODO: do register
   const error = await register(username, email, password);
   if (error) {
     if (error.includes(";")) {

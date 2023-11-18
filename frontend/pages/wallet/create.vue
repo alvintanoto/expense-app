@@ -6,9 +6,12 @@ definePageMeta({
 import { ref, onMounted } from "vue";
 
 const currencyStore = useCurrencyStore();
+const walletStore = useWalletStore();
+
 await currencyStore.fetchCurrenciesData();
 
 const layout = "client";
+const router = useRouter();
 
 const errorMessage = ref("");
 const initialBalance = ref("0");
@@ -40,8 +43,34 @@ const onCurrencySelected = (currency) => {
   };
 };
 
-// TODO: create plugin api create wallet
-const handleCreateWallet = async (event) => {};
+// TODO: create composables api create wallet
+const handleCreateWallet = async (event) => {
+  const walletName = event.target.wallet_name.value.trim();
+
+  if (walletName === "") {
+    errorMessage.value = "Wallet name is required";
+    return;
+  }
+
+  if (walletName.length > 20) {
+    errorMessage.value = "Wallet name length cannot be more than 20 character";
+    return;
+  }
+
+  errorMessage.value = "";
+
+  const err = await walletStore.createWallet(
+    walletName,
+    selectedCurrency.value.currency_id,
+    String(initialBalance.value)
+  );
+  console.log("unhandled", err)
+  if (err) {
+    errorMessage.value = err
+  } else {
+      router.push({ path: "/wallet" });
+  }
+};
 </script>
 
 <template>
