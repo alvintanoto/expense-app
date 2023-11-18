@@ -5,45 +5,12 @@ definePageMeta({
 
 import { ref } from "vue";
 
-const accessTokenCookie = useCookie("access_token");
-const refreshTokenCookie = useCookie("refresh_token");
-
 const errorMessage = ref("");
 
 const doRegister = async (evt, username, email, password) => {
-  const resp = await useFetch("/api/auth/register", {
-    method: "POST",
-    body: {
-      username: username,
-      email: email,
-      password: password,
-    },
-    onResponseError({ request, response, options }) {
-      if (response.status === 400) {
-        response._data.data.client_message =
-          response._data.data.client_message.replaceAll("; ", "\n");
-        errorMessage.value = response._data.data.client_message;
-        return;
-      }
-
-      if (response.status === 409) {
-        errorMessage.value = response._data.data.client_message;
-        return;
-      }
-
-      errorMessage.value = "cannot connect to server, please try again later";
-      return;
-    },
-  });
-
-  if (resp.data) {
-    if (resp.data.value.code === "20000") {
-      accessTokenCookie.value = resp.data.value.data.access_token;
-      refreshTokenCookie.value = resp.data.value.data.refresh_token;
-      navigateTo("/wallet/create")
-      evt.target.reset()
-    }
-  }
+  // TODO: do register
+  navigateTo("/wallet/create")
+  evt.target.reset();
 };
 
 const handleRegister = async (evt) => {

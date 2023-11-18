@@ -1,6 +1,8 @@
 
 export async function login (username, password) {
-    const {data, pending, error, refresh} = await useFetch("/api/v1/authentication/login", {
+    const config = useRuntimeConfig();
+
+    const {data, pending, error, refresh} = await useFetch(config.public.loginEndpoint, {
         onRequest({request, options}) {
             options.method = "POST"
             options.body = {

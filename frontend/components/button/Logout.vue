@@ -1,26 +1,7 @@
 <script setup>
 const onLogoutClicked = async () => {
-  // clear cookies
-  // navigate to login
-  const accessTokenCookie = useCookie("access_token");
-  const refreshTokenCookie = useCookie("refresh_token");
-
-  //clear stores
-  const walletStore = useWalletStore();
-
-  const { data } = await useFetch("/api/auth/logout", {
-    headers: {
-      authorization: "Bearer " + accessTokenCookie.value,
-    },
-  });
-
-  if (data.value.code === "20000") {
-    walletStore.clearWalletList();
-
-    accessTokenCookie.value = null;
-    refreshTokenCookie.value = null;
+    // TODO: LOGOUT PROCESS
     navigateTo("/login");
-  }
 };
 </script>
 

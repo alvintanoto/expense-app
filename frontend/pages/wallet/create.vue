@@ -3,14 +3,23 @@ definePageMeta({
   middleware: ["authenticated"],
 });
 
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 
-const currencyStore = useCurrenciesStore();
-const walletStore = useWalletStore();
+const currencyStore = useCurrencyStore();
 
-const { data } = await useAsyncData("currency", () =>
-  currencyStore.getCurrencies()
-);
+if (currencyStore.currencies.length === 0) {
+  const [data, error] = await fetchCurrencies()
+  if (error) {
+    if (error?.code === '40101') {
+      navigateTo('/login')
+    }
+
+    // TODO: add error message
+  } else {
+      currencyStore.currencies = data
+  }
+}
+
 
 const layout = "client";
 
@@ -18,6 +27,7 @@ const errorMessage = ref("");
 const initialBalance = ref("0");
 const isCurrencyPickerShown = ref(false);
 
+// TODO: Get local locale
 const selectedCurrency = ref({
   currency: currencyStore.currencyList[5].currency_code,
   currency_id: currencyStore.currencyList[5].id,
@@ -41,46 +51,9 @@ const onCurrencySelected = (currency) => {
   };
 };
 
+// TODO: create plugin api create wallet
 const handleCreateWallet = async (event) => {
-  const walletName = event.target.wallet_name.value.trim();
-
-  if (walletName === "") {
-    errorMessage.value = "Wallet name is required";
-    return;
-  }
-
-  if (walletName.length > 20) {
-    errorMessage.value = "Wallet name length cannot be more than 20 character";
-    return;
-  }
-
-  errorMessage.value = "";
-
-  let res = await walletStore.createWallet(
-    walletName,
-    selectedCurrency.value.currency_id,
-    String(initialBalance.value)
-  );
-
-  if (res.error) {
-    if (res.error.code === "40000") {
-      errorMessage.value = res.error.client_message.replaceAll("; ", "\n");
-      errorMessage.value = res.error.client_message;
-      return;
-    }
-
-    errorMessage = "Server unavailable, please try again later.";
-    return;
-  }
-
-  if (res.data.code === "20100") {
-    // success redirect to wallet
-    navigateTo("/wallet");
-    event.target.reset();
-    initialBalance.value = 0;
-    return;
-  }
-  return;
+  
 };
 </script>
 

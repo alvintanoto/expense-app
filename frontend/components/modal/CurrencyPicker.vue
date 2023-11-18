@@ -1,22 +1,21 @@
 <script setup>
 import { ref } from "vue";
 
+// TODO: Get Currencies
+const currencyStore = useCurrencyStore();
+
 const emit = defineEmits(["onCurrencySelected"]);
 const searchCurrencies = ref("");
 
-const currencyStore = useCurrenciesStore();
-const { data } = await useAsyncData("currency", () =>
-  currencyStore.getCurrencies()
-);
-
-currencyStore.setCurrencyFilter("")
+// TODO: add store and fetch
+currencyStore.filter = ""
 
 const onCurrencySelected = (currency) => {
   emit("onCurrencySelected", currency);
 };
 
 const onSearchChanged = (event) => {
-  currencyStore.setCurrencyFilter(event.target.value);
+  currencyStore.filter = event.target.value;
 };
 </script>
 

@@ -1,9 +1,8 @@
-export async function fetchCurrencies() {
-    console.log("fetchCurrencies")
+export async function fetchWallets() {
     const authStore = useAuthStore();
-    const globalStore = useGlobalStore();
+    const walletStore = useWalletStore();
 
-    const {data, pending, error, refresh} = await useFetch("/api/v1/currencies", {
+    const {data, pending, error, refresh} = await useFetch("/api/v1/user/wallet", {
         onRequest({request, options}) {
             options.method = "GET"
             options.headers.authorization = "Bearer " + authStore.accessToken
@@ -12,7 +11,6 @@ export async function fetchCurrencies() {
 
     if (error?.value) {
         if (error?.value?.data?.code === '40101') {
-            globalStore.error = error.value.data.client_message
             return [null, error.value.data]
         }
 

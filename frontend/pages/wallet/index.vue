@@ -2,12 +2,10 @@
 definePageMeta({
   middleware: ["authenticated"],
 });
-const walletStore = useWalletStore();
+
 const layout = "client";
 
-onMounted(async () => {
-  await walletStore.getUserWallets()
-})
+// TODO: GET USER WALLET
 </script>
 
 <template>
@@ -19,7 +17,7 @@ onMounted(async () => {
       >
         <div class="p-4 font-bold border-b-[1px]">Your wallets</div>
         <div class="p-4">
-          <div
+          <!-- <div
             v-for="(item, index) in walletStore.walletList"
             :key="index"
             class="m-2 p-4 flex flex-row cursor-pointer items-center hover:bg-rp-dawn-overlay hover:dark:bg-rp-moon-overlay rounded-md"
@@ -33,7 +31,7 @@ onMounted(async () => {
                 {{ item.currency.currency_code }}
               </div>
             </div>
-          </div>
+          </div> -->
         </div>
       </div>
     </template>

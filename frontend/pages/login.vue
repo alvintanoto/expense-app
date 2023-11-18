@@ -5,44 +5,7 @@ definePageMeta({
 
 import { ref } from "vue";
 
-const accessTokenCookie = useCookie("access_token");
-const refreshTokenCookie = useCookie("refresh_token");
 const errorMessage = ref("");
-
-const doLogin = async (evt, username, password) => {
-  const resp = await useFetch("/api/auth/login", {
-    method: "POST",
-    body: {
-      username: username,
-      password: password,
-    },
-    onResponseError({ request, response, options }) {
-      if (response.status === 400) {
-        response._data.data.client_message =
-          response._data.data.client_message.replaceAll("; ", "\n");
-        errorMessage.value = response._data.data.client_message;
-        return;
-      }
-
-      if (response.status > 400 && response.status < 500) {
-        errorMessage.value = response._data.data.client_message;
-        return;
-      }
-
-      errorMessage.value = "cannot connect to server, please try again later";
-      return;
-    },
-  });
-
-  if (resp.data) {
-    if (resp.data.value.code === "20000") {
-      accessTokenCookie.value = resp.data.value.data.access_token;
-      refreshTokenCookie.value = resp.data.value.data.refresh_token;
-      navigateTo("/transaction");
-      evt.target.reset();
-    }
-  }
-};
 
 const handleLogin = async (evt) => {
   const username = event.target.username.value.trim();
@@ -59,6 +22,22 @@ const handleLogin = async (evt) => {
   }
 
   await doLogin(evt, username, password);
+};
+
+const doLogin = async (evt, username, password) => {
+  const error = await login(username, password) 
+  if (error) {
+    if (error.includes(';')) {
+      errorMessage.value = error.replaceAll("; ", "\n");
+      return
+    }
+
+    errorMessage.value = error;
+    return
+  }
+
+  navigateTo("/transaction");
+  evt.target.reset();
 };
 </script>
 
@@ -84,7 +63,7 @@ const handleLogin = async (evt) => {
           <div class="text-lg font-bold">Login</div>
           <div
             v-if="errorMessage"
-            class="my-4 p-4 border-2 rounded-md bg-rp-dawn-love/10 dark:bg-rp-dawn-love/10 border-rp-dawn-love dark:border-rp-moon-love text-rp-dawn-love dark:text-rp-moon-love"
+            class="whitespace-pre-wrap my-4 p-4 border-2 rounded-md bg-rp-dawn-love/10 dark:bg-rp-dawn-love/10 border-rp-dawn-love dark:border-rp-moon-love text-rp-dawn-love dark:text-rp-moon-love"
           >
             {{ errorMessage }}
           </div>

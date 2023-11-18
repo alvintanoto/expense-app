@@ -18,8 +18,8 @@ export const useCurrencyStore = defineStore("currency", {
     
             return state.currencies.filter((item) => {
                 if (
-                  item.currency_code.includes(state.filter) ||
-                  item.currency_name.includes(state.filter)
+                  item.currency_code.toLowerCase().includes(state.filter) ||
+                  item.currency_name.toLowerCase().includes(state.filter)
                 ) {
                   return item;
                 }
