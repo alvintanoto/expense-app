@@ -5,6 +5,7 @@ definePageMeta({
 
 import { ref } from "vue";
 
+const router = useRouter();
 const errorMessage = ref("");
 
 const doRegister = async (evt, username, email, password) => {
@@ -19,7 +20,7 @@ const doRegister = async (evt, username, email, password) => {
     return;
   }
 
-  navigateTo("/wallet/create")
+  router.push({ path: "/wallet/create" });
   evt.target.reset();
 };
 
