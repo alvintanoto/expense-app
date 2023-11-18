@@ -1,18 +1,15 @@
 export async function fetchCurrencies() {
-    console.log("fetching currencies..")
     const config = useRuntimeConfig();
     const authStore = useAuthStore();
     const globalStore = useGlobalStore();
 
-    const {data, pending, error, refresh} = await useFetch(config.public.currencyEndpoint, 
+    const { data, pending, error, refresh } = await useFetch(config.public.currencyEndpoint,
         {
             method: "GET",
             headers: {
                 Authorization: `Bearer ${authStore.accessToken}`
             }
         })
-
-    console.log(error.value)
 
     if (error?.value) {
         if (error?.value?.data?.code == '40104' || error?.value?.data?.code == '40101') {
