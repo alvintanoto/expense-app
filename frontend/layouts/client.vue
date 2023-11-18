@@ -25,6 +25,10 @@ const getProfileNavigationColor = () => {
   >
     <!-- modal -->
     <div><slot name="modal" /></div>
+
+    <!-- toast -->
+    <ToastError/>
+
     <!-- body -->
     <div class="flex flex-row flex-1">
       <!-- left navigation -->

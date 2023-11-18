@@ -5,21 +5,9 @@ definePageMeta({
 
 import { ref, onMounted } from "vue";
 
+const globalStore = useGlobalStore();
 const currencyStore = useCurrencyStore();
-
-if (currencyStore.currencies.length === 0) {
-  const [data, error] = await fetchCurrencies()
-  if (error) {
-    if (error?.code === '40101') {
-      navigateTo('/login')
-    }
-
-    // TODO: add error message
-  } else {
-      currencyStore.currencies = data
-  }
-}
-
+await currencyStore.fetchCurrenciesData();
 
 const layout = "client";
 
@@ -28,11 +16,14 @@ const initialBalance = ref("0");
 const isCurrencyPickerShown = ref(false);
 
 // TODO: Get local locale
-const selectedCurrency = ref({
-  currency: currencyStore.currencyList[5].currency_code,
-  currency_id: currencyStore.currencyList[5].id,
-  locale: "nl-NL",
-});
+const selectedCurrency = ref({});
+if (currencyStore.currencyList.length !== 0) {
+  selectedCurrency.value = {
+    currency: currencyStore.currencyList[5].currency_code,
+    currency_id: currencyStore.currencyList[5].id,
+    locale: "nl-NL",
+  };
+}
 
 const showCurrencyPicker = () => {
   isCurrencyPickerShown.value = true;
@@ -52,9 +43,7 @@ const onCurrencySelected = (currency) => {
 };
 
 // TODO: create plugin api create wallet
-const handleCreateWallet = async (event) => {
-  
-};
+const handleCreateWallet = async (event) => {};
 </script>
 
 <template>

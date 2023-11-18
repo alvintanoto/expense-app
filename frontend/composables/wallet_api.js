@@ -5,7 +5,10 @@ export async function fetchWallets() {
     const {data, pending, error, refresh} = await useFetch("/api/v1/user/wallet", {
         onRequest({request, options}) {
             options.method = "GET"
-            options.headers.authorization = "Bearer " + authStore.accessToken
+            
+            if (authStore.accessToken) {
+                options.headers.authorization = "Bearer " + authStore.accessToken
+            }
         }
     })
 

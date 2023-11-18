@@ -1,3 +1,4 @@
+import { fetchCurrencies } from '~/composables/currency_api'
 
 export const useCurrencyStore = defineStore("currency", {
     state: () => ({
@@ -5,7 +6,21 @@ export const useCurrencyStore = defineStore("currency", {
         currencies: [],
     }),
     actions: {
-        
+        async fetchCurrenciesData() {
+            if (this.currencies.length !== 0) {
+                return null
+            }
+
+            // fetch from composable
+            const [data, error] = await fetchCurrencies()
+            if (error) {
+               return error
+            } else {
+                this.currencies = data
+            }
+
+            return null
+        }
     },
     getters: {
         currencyList(state) {
@@ -15,19 +30,18 @@ export const useCurrencyStore = defineStore("currency", {
             if (state.filter === "") {
                 return this.currencies
             }
-    
+
             return state.currencies.filter((item) => {
                 if (
-                  item.currency_code.toLowerCase().includes(state.filter) ||
-                  item.currency_name.toLowerCase().includes(state.filter)
+                    item.currency_code.toLowerCase().includes(state.filter) ||
+                    item.currency_name.toLowerCase().includes(state.filter)
                 ) {
-                  return item;
+                    return item;
                 }
-            
+
                 return;
             })
         }
     },
     persist: true
-  });
-  
+});

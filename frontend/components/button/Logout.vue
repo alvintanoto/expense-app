@@ -1,7 +1,9 @@
 <script setup>
+const router = useRouter();
+
 const onLogoutClicked = async () => {
     // TODO: LOGOUT PROCESS
-    navigateTo("/login");
+    router.push({path: "/login"})
 };
 </script>
 

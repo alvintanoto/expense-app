@@ -25,15 +25,15 @@ const handleLogin = async (evt) => {
 };
 
 const doLogin = async (evt, username, password) => {
-  const error = await login(username, password) 
+  const error = await login(username, password);
   if (error) {
-    if (error.includes(';')) {
+    if (error.includes(";")) {
       errorMessage.value = error.replaceAll("; ", "\n");
-      return
+      return;
     }
 
     errorMessage.value = error;
-    return
+    return;
   }
 
   navigateTo("/transaction");
@@ -46,6 +46,9 @@ const doLogin = async (evt, username, password) => {
     class="min-h-screen p-4 bg-rp-dawn-base text-rp-dawn-text dark:bg-rp-moon-base dark:text-rp-moon-text"
   >
     <div class="container mx-auto p-4">
+      <!-- toast -->
+      <ToastError />
+
       <div class="flex flex-row items-center justify-between">
         <div class="text-xl">Expense App</div>
         <div class="flex flex-row items-center">
