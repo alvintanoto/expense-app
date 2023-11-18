@@ -1,26 +1,27 @@
 export async function fetchCurrencies() {
+    console.log("fetching currencies..")
     const config = useRuntimeConfig();
     const authStore = useAuthStore();
     const globalStore = useGlobalStore();
 
-    const {data, pending, error, refresh} = await useFetch(config.public.currencyEndpoint, {
-        onRequest({request, options}) {
-            options.method = "GET"
-
-            if (authStore.accessToken) {
-                options.headers.authorization = "Bearer " + authStore.accessToken
+    const {data, pending, error, refresh} = await useFetch(config.public.currencyEndpoint, 
+        {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${authStore.accessToken}`
             }
-        }
-    })
+        })
+
+    console.log(error.value)
 
     if (error?.value) {
-        if (error.value.data.code == '40104') {
+        if (error?.value?.data?.code == '40104' || error?.value?.data?.code == '40101') {
             globalStore.forceLogout = true;
             globalStore.errorMessage = "Session expired, please login again";
             return [null, error.value.data]
         }
 
-        if (error.value.data.client_message) {
+        if (error?.value?.data?.client_message) {
             globalStore.errorMessage = error.value.data.client_message;
             return [null, error.value.data]
         }

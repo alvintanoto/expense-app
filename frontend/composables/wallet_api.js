@@ -1,23 +1,25 @@
 export async function fetchWallets() {
+    const config = useRuntimeConfig();
     const authStore = useAuthStore();
-    const walletStore = useWalletStore();
+    const globalStore = useGlobalStore();
 
-    const {data, pending, error, refresh} = await useFetch("/api/v1/user/wallet", {
-        onRequest({request, options}) {
-            options.method = "GET"
-            
-            if (authStore.accessToken) {
-                options.headers.authorization = "Bearer " + authStore.accessToken
+    const { data, pending, error, refresh } = await useFetch(config.public.getWalletEndpoint,
+        {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${authStore.accessToken}`
             }
-        }
-    })
+        })
 
     if (error?.value) {
-        if (error?.value?.data?.code === '40101') {
+        if (error?.value?.data?.code == '40104' || error?.value?.data?.code == '40101') {
+            globalStore.forceLogout = true;
+            globalStore.errorMessage = "Session expired, please login again";
             return [null, error.value.data]
         }
 
         if (error?.value?.data?.client_message) {
+            globalStore.errorMessage = error.value.data.client_message;
             return [null, error.value.data]
         }
 

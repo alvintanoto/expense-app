@@ -7,12 +7,15 @@ export const useCurrencyStore = defineStore("currency", {
     }),
     actions: {
         async fetchCurrenciesData() {
+            console.log("called", this.currencies)
+
             if (this.currencies.length !== 0) {
                 return null
             }
 
             // fetch from composable
             const [data, error] = await fetchCurrencies()
+            console.log(data, error)
             if (error) {
                return error
             } else {

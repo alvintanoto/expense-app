@@ -5,7 +5,6 @@ definePageMeta({
 
 import { ref, onMounted } from "vue";
 
-const globalStore = useGlobalStore();
 const currencyStore = useCurrencyStore();
 await currencyStore.fetchCurrenciesData();
 
