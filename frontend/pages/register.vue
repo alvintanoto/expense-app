@@ -9,6 +9,17 @@ const errorMessage = ref("");
 
 const doRegister = async (evt, username, email, password) => {
   // TODO: do register
+  const error = await register(username, email, password);
+  if (error) {
+    if (error.includes(";")) {
+      errorMessage.value = error.replaceAll("; ", "\n");
+      return;
+    }
+
+    errorMessage.value = error;
+    return;
+  }
+
   navigateTo("/wallet/create")
   evt.target.reset();
 };
